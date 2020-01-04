@@ -71,13 +71,13 @@ header _ =
                 [ centerX
                 , Font.size 64 
                 , Font.heavy
-                ] <| text "Pomoc drogowa 24h"
+                ] <| text "pomoc drogowa 24h"
         subtitle = 
             el 
                 [ centerX
                 , Font.size 32 
                 , Font.light
-                ] <| text "Dzia\u{0142}amy na terenie Wroc\u{0142}awia i okolic"
+                ] <| text "dzia\u{0142}amy na terenie Wroc\u{0142}awia i okolic"
     in column 
         [ width fill
         , spacing 16 
@@ -89,19 +89,23 @@ header _ =
 mainElement : Model -> Element Msg
 mainElement model = 
     let fontFamily = Font.family [ Font.typeface "Roboto", Font.sansSerif ]
-    in column 
-        [ fontFamily
-        , Font.color <| theme Text
+    in el 
+        [ width fill
+        , Element.height fill
         , Bg.color <| theme Bg
-        , width <| px 960
-        , centerX 
-        , padding 16
-        , spacing 96
-        ]
-        [ header model
-        , img 
-        , phone 
-        ]
+        ] <| column 
+                [ fontFamily
+                , Font.color <| theme Text
+                , Bg.color <| theme Bg
+                , width <| px 960
+                , centerX 
+                , padding 16
+                , spacing 96
+                ]
+                [ header model
+                , img 
+                , phone 
+                ]
 
 img : Element Msg
 img = el [] <|
