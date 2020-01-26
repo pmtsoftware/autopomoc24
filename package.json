@@ -1,0 +1,20 @@
+{
+  "name": "autopomoc24",
+  "version": "1.0.0",
+  "description": "witryna autopomoc24",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "minify": "uglifyjs main.js --compress 'pure_funcs=\"F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9\",pure_getters,keep_fargs=false,unsafe_comps,unsafe' | uglifyjs --mangle --output=main.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pmtsoftware/autopomoc24.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pmtsoftware/autopomoc24/issues"
+  },
+  "homepage": "https://github.com/pmtsoftware/autopomoc24#readme"
+}

@@ -233,7 +233,7 @@ view model = Element.layout [] <|
                 Element.Tablet -> mainElement model
                 Element.Desktop -> mainElement model
                 Element.BigDesktop -> mainElement model
-        Nothing -> text "waiting..."
+        Nothing -> Element.none
 
 main : Program () Model Msg
 main = Browser.element
