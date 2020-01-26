@@ -1,9 +1,17 @@
 module Main exposing ( main )
 
 import Browser
+import Browser.Dom exposing 
+    ( getViewport 
+    , Viewport 
+    )
+import Browser.Events exposing 
+    ( onResize 
+    )
 import Html exposing
     ( Html
     )
+import Task as Task
 import Element exposing 
     ( Element
     , el 
@@ -12,9 +20,11 @@ import Element exposing
     , column 
     , row
     , width 
+    , height
     , px 
     , fill
     , centerX 
+    , centerY
     , padding
     , spacing 
     )
@@ -42,18 +52,36 @@ import Element.Background as Bg
 -- #17A ź
 -- #17C ż
 
-type alias Model = ()
+type alias Device = Element.Device
 
-type alias Msg = ()
+type alias Model = Maybe Device
+
+type Msg 
+    = GotViewport Viewport
+    | Resized Int Int 
 
 init : () -> ( Model, Cmd Msg )
-init _ = ( (), Cmd.none )
+init _ = 
+    let askForViewport = Task.perform GotViewport getViewport
+    in ( Nothing, askForViewport )
 
 subs : Model -> Sub Msg
-subs _ = Sub.none
+subs _ = onResize Resized
+
+classify : Viewport -> Device 
+classify v = 
+    let x = truncate v.viewport.width
+        y = truncate v.viewport.height
+    in Element.classifyDevice 
+        { width = x 
+        , height = y 
+        }
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update _ model = ( model, Cmd.none )
+update msg _ =
+    case msg of
+        GotViewport viewport -> ( Just <| classify viewport, Cmd.none )
+        Resized x y -> ( Just <| Element.classifyDevice { width = x, height = y }, Cmd.none )
 
 type Color = Primary | Text | Bg
 
@@ -134,8 +162,78 @@ phone =
                     ]
             }
 
+headerMobile : Element Msg
+headerMobile = 
+    let title = 
+            el 
+                [ centerX
+                , Font.size 48 
+                , Font.heavy
+                ] <| text "pomoc drogowa 24h"
+        subtitle = 
+            el 
+                [ centerX
+                , Font.size 16 
+                , Font.light
+                ] <| text "dzia\u{0142}amy na terenie Wroc\u{0142}awia i okolic"
+    in column 
+        [ width fill
+        , spacing 16 
+        ] 
+        [ title
+        , subtitle 
+        ]
+
+phoneMobile : Element Msg
+phoneMobile = 
+    el 
+        [ centerX
+        , Font.size 32
+        , Font.color <| theme Bg
+        , Border.rounded 8
+        , Bg.color <| theme Primary
+        , padding 16
+        ] <|
+        link []
+            { url = "tel:+48728725796"
+            , label = 
+                row  [ spacing 50 ]
+                    [ el [] <| text "\u{260E}"
+                    , el [ Font.bold ] <| text "+48 728 725 796"
+                    ]
+            }
+
+mainMobile : Element Msg 
+mainMobile = 
+    let fontFamily = Font.family [ Font.typeface "Roboto", Font.sansSerif ]
+    in el 
+        [ width fill
+        , height fill
+        , Bg.color <| theme Bg
+        ] <| column 
+                [ fontFamily
+                , Font.color <| theme Text
+                , Bg.color <| theme Bg
+                , width fill
+                , centerY
+                , padding 0
+                , spacing 64
+                ]
+                [ headerMobile
+                , img
+                , phoneMobile
+                ]
+
 view : Model -> Html Msg
-view model = Element.layout [] <| mainElement model
+view model = Element.layout [] <| 
+    case model of 
+        Just device -> 
+            case device.class of 
+                Element.Phone -> mainMobile
+                Element.Tablet -> mainElement model
+                Element.Desktop -> mainElement model
+                Element.BigDesktop -> mainElement model
+        Nothing -> text "waiting..."
 
 main : Program () Model Msg
 main = Browser.element
