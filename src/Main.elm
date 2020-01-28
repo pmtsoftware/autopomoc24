@@ -24,7 +24,6 @@ import Element exposing
     , px 
     , fill
     , centerX 
-    , centerY
     , padding
     , spacing 
     )
@@ -54,7 +53,7 @@ import Element.Background as Bg
 
 type alias Device = Element.Device
 
-type alias Model = Maybe Device
+type alias Model = Maybe Device 
 
 type Msg 
     = GotViewport Viewport
@@ -92,8 +91,8 @@ theme color =
         Text -> Element.rgb255 66 66 66
         Bg -> Element.rgb255 245 245 245
 
-header : Model -> Element Msg
-header _ = 
+header : Element Msg
+header = 
     let title = 
             el 
                 [ centerX
@@ -114,8 +113,8 @@ header _ =
         , subtitle 
         ]
 
-mainElement : Model -> Element Msg
-mainElement model = 
+mainElement : Element Msg
+mainElement = 
     let fontFamily = Font.family [ Font.typeface "Roboto", Font.sansSerif ]
     in el 
         [ width fill
@@ -127,10 +126,10 @@ mainElement model =
                 , Bg.color <| theme Bg
                 , width <| px 960
                 , centerX 
-                , padding 16
-                , spacing 96
+                , padding 32
+                , spacing 64
                 ]
-                [ header model
+                [ header 
                 , img 
                 , phone 
                 ]
@@ -147,18 +146,18 @@ phone =
     el 
         [ centerX
         , Font.size 64
+        , Font.color <| theme Bg
         , Border.solid
-        , Border.rounded 64
-        , Border.color <| theme Primary
-        , Border.width 4
+        , Border.rounded 8
         , padding 32
+        , Bg.color <| theme Primary
         ] <|
         link []
             { url = "tel:+48728725796"
             , label = 
                 row  [ spacing 50 ]
                     [ el [] <| text "\u{260E}"
-                    , el [ Font.bold ] <| text "+48 728 725 796"
+                    , el [ Font.bold ] <| text "+48 531 787 317"
                     ]
             }
 
@@ -167,18 +166,19 @@ headerMobile =
     let title = 
             el 
                 [ centerX
-                , Font.size 48 
+                , Font.size 96 
                 , Font.heavy
                 ] <| text "pomoc drogowa 24h"
         subtitle = 
             el 
                 [ centerX
-                , Font.size 16 
+                , Font.size 48 
                 , Font.light
                 ] <| text "dzia\u{0142}amy na terenie Wroc\u{0142}awia i okolic"
     in column 
         [ width fill
-        , spacing 16 
+        , padding 128
+        , spacing 32 
         ] 
         [ title
         , subtitle 
@@ -188,18 +188,18 @@ phoneMobile : Element Msg
 phoneMobile = 
     el 
         [ centerX
-        , Font.size 32
+        , Font.size 64
         , Font.color <| theme Bg
         , Border.rounded 8
         , Bg.color <| theme Primary
-        , padding 16
+        , padding 32
         ] <|
         link []
             { url = "tel:+48728725796"
             , label = 
                 row  [ spacing 50 ]
                     [ el [] <| text "\u{260E}"
-                    , el [ Font.bold ] <| text "+48 728 725 796"
+                    , el [ Font.bold ] <| text "+48 531 787 317"
                     ]
             }
 
@@ -215,9 +215,8 @@ mainMobile =
                 , Font.color <| theme Text
                 , Bg.color <| theme Bg
                 , width fill
-                , centerY
                 , padding 0
-                , spacing 64
+                , spacing 128
                 ]
                 [ headerMobile
                 , img
@@ -228,11 +227,9 @@ view : Model -> Html Msg
 view model = Element.layout [] <| 
     case model of 
         Just device -> 
-            case device.class of 
-                Element.Phone -> mainMobile
-                Element.Tablet -> mainElement model
-                Element.Desktop -> mainElement model
-                Element.BigDesktop -> mainElement model
+            case device.orientation of 
+                Element.Portrait ->  mainMobile
+                Element.Landscape -> mainElement 
         Nothing -> Element.none
 
 main : Program () Model Msg
