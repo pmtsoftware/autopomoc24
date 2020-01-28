@@ -153,7 +153,7 @@ phone =
         , Bg.color <| theme Primary
         ] <|
         link []
-            { url = "tel:+48728725796"
+            { url = "tel:+48531787317"
             , label = 
                 row  [ spacing 50 ]
                     [ el [] <| text "\u{260E}"
@@ -195,7 +195,7 @@ phoneMobile =
         , padding 32
         ] <|
         link []
-            { url = "tel:+48728725796"
+            { url = "tel:+48531787317"
             , label = 
                 row  [ spacing 50 ]
                     [ el [] <| text "\u{260E}"
